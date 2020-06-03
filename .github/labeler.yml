@@ -1,0 +1,19 @@
+type:config:
+  - ".github/**"
+  - "pom.xml"
+  - ".travis.yml"
+  - ".gitignore"
+  - "Dockerfile"
+
+theme:features:
+  - "src/main/*"
+
+theme:tests:
+  - "src/test/*"
+
+theme:documentation:
+  - "docs/**"
+
+theme:TRASH:
+  - ".idea/**"
+  - "target/**"
