@@ -10,11 +10,3 @@ jobs:
       - uses: actions/labeler@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-  verify:
-    runs-on: ubuntu-18.04
-    needs: [assign]
-    steps:
-      - uses: zwaldowski/match-label-action@v2
-        with:
-          allowed: 'type:fix, type:features, type:documentation, type:tests, type:config'

@@ -1,11 +1,11 @@
-type:config:
+theme:build:
   - ".github/**"
   - "pom.xml"
   - ".travis.yml"
   - ".gitignore"
   - "Dockerfile"
 
-theme:features:
+theme:code:
   - "src/main/*"
 
 theme:tests:
