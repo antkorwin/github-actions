@@ -1,0 +1,19 @@
+theme:build:
+  - ".github/**"
+  - "pom.xml"
+  - ".travis.yml"
+  - ".gitignore"
+  - "Dockerfile"
+
+theme:code:
+  - "src/main/*"
+
+theme:tests:
+  - "src/test/*"
+
+theme:documentation:
+  - "docs/**"
+
+theme:TRASH:
+  - ".idea/**"
+  - "target/**"

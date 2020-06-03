@@ -1,4 +1,4 @@
-name: "Verify type labels"
+name: "Verify labels in PR"
 
 on:
   pull_request:
