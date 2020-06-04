@@ -26,8 +26,11 @@ jobs:
 #     Build Docker image
       - name: Build and tag image
         env:
-          IMAGE_NAME: $GITHUB_REPOSITORY
-        run: docker build -t "docker.pkg.github.com/$GITHUB_REPOSITORY/$IMAGE_NAME:latest" .
+          IMAGE_NAME: ${GITHUB_REPOSITORY}
+        run: |
+          echo "docker.pkg.github.com/$GITHUB_REPOSITORY/$IMAGE_NAME:latest" .
+          docker build -t "docker.pkg.github.com/$GITHUB_REPOSITORY/$IMAGE_NAME:latest" .
+
 
       - name: Docker login
         run: docker login docker.pkg.github.com -u $GITHUB_ACTOR -p ${{secrets.GITHUB_TOKEN}}
