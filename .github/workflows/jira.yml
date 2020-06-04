@@ -26,16 +26,16 @@ jobs:
           echo grep: ${GITHUB_HEAD_REF} | egrep -o 'GA-[0-9]{1,4}'
 
       - name: Check Issue
-          shell: bash
-          run: |
-            echo env.issue: ${{env.ISSUE_ID}}
-            echo step.issue: ${{steps.find_issue.outputs.ISSUE_ID}}
+        shell: bash
+        run: |
+          echo env.issue: ${{env.ISSUE_ID}}
+          echo step.issue: ${{steps.find_issue.outputs.ISSUE_ID}}
 
-            if [[ "${{env.ISSUE_ID}}" == "" ]]; then
-              echo "Please name your branch according to the JIRA issue: [project_key]-[task_number]-branch_name"
-              exit 1
-            fi
-            echo succcessfully found JIRA issue: ${{env.ISSUE_ID}}
+          if [[ "${{env.ISSUE_ID}}" == "" ]]; then
+            echo "Please name your branch according to the JIRA issue: [project_key]-[task_number]-branch_name"
+            exit 1
+          fi
+          echo succcessfully found JIRA issue: ${{env.ISSUE_ID}}
 
       - name: Transition issue
         if: ${{ success() }}
