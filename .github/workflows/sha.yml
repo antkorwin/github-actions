@@ -1,0 +1,19 @@
+name: SHA commit
+
+on:
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+
+  build_docker_image:
+    runs-on: ubuntu-18.04
+    steps:
+
+      - uses: actions/checkout@v1
+
+      - name: set global env
+        run: |
+          echo full = ${GITHUB_SHA}
+          echo sha8 = ${GITHUB_SHA::8}
