@@ -28,12 +28,11 @@ jobs:
       - name: Check Issue
         shell: bash
         run: |
-          echo check issue: ${{steps.find_issue.outputs.ISSUE_ID}}
-          if [[ "${{env.ISSUE_ID}}" == "" ]]; then
+          if [[ "${{steps.find_issue.outputs.ISSUE_ID}}" == "" ]]; then
             echo "Please name your branch according to the JIRA issue: [project_key]-[task_number]-branch_name"
             exit 1
           fi
-          echo succcessfully found JIRA issue: ${{env.ISSUE_ID}}
+          echo succcessfully found JIRA issue: ${{steps.find_issue.outputs.ISSUE_ID}}
 
       - name: Transition issue
         if: ${{ success() }}
