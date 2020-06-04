@@ -23,30 +23,31 @@ jobs:
       - name: Maven Package
         run: mvn -B clean compile package -DskipTests
 
+#     Set global environment variables
       - name: set global env
         id: global_env
+#       переменную IMAGE_NAME формируем из названия репозитория
+#       "owner/repo-name"
+#       берем все что после "/"
+#       set-output выставляет переменную в этом шаге
         run: |
           echo "::set-output name=IMAGE_NAME::${GITHUB_REPOSITORY#*/}"
-
-      - name: test
-        run: echo ${{ steps.global_env.outputs.IMAGE_NAME }}
 
 #     Build Docker image
       - name: Build and tag image
         run: |
-          echo "docker.pkg.github.com/$GITHUB_REPOSITORY/${{ steps.global_env.outputs.IMAGE_NAME }}:latest" .
           docker build -t "docker.pkg.github.com/${GITHUB_REPOSITORY}/${{ steps.global_env.outputs.IMAGE_NAME }}:latest" .
-
 
       - name: Docker login
         run: docker login docker.pkg.github.com -u $GITHUB_ACTOR -p ${{secrets.GITHUB_TOKEN}}
 
+#     Publish image
       - name: Publish image
         env:
           IMAGE_NAME: $GITHUB_REPOSITORY
         run: echo "docker.pkg.github.com/$GITHUB_REPOSITORY/${{ steps.global_env.outputs.IMAGE_NAME }}:latest"
 
 
-#     Publish image
+
 #      - name: Publish to GPR
 #        run: docker push "docker.pkg.github.com/$GITHUB_REPOSITORY/$IMAGE_NAME:latest"
