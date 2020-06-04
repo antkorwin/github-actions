@@ -22,9 +22,14 @@ jobs:
         shell: bash
         run: |
           echo "##[set-output name=issue_id;]$(echo ${GITHUB_HEAD_REF} | egrep -o 'GA-[0-9]{1,4}')"
-          if [[ ${{ steps.find_issue.outputs.issue_id }} == "" ]]; then
-          echo "Please name your branch according to the JIRA issue: [project_key]-[task_number]-branch_name"
-          exit 1
+          echo brach: $GITHUB_HEAD_REF
+          echo issue: $issue_id
+          echo issue: ${{issue_id}}
+          echo issue: ${{steps.find_issue.outputs.issue_id}}
+
+          if [[ "${{issue_id}}" == "" ]]; then
+            echo "Please name your branch according to the JIRA issue: [project_key]-[task_number]-branch_name"
+            exit 1
           fi
           echo succcessfully found JIRA issue: $issue_id
 
