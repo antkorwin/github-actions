@@ -1,0 +1,46 @@
+name: Deploy docker image
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+
+  build_docker_image:
+    runs-on: ubuntu-18.04
+    steps:
+
+#     Build JAR:
+      - uses: actions/checkout@v1
+      - name: set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      - name: Maven Package
+        run: mvn -B clean compile package -DskipTests
+
+#     Set global environment variables:
+      - name: set global env
+        id: global_env
+#       переменную IMAGE_NAME формируем из названия репозитория
+#                       "owner/repo-name"
+#       берем все что после   /  чтобы задать имя образа
+#       set-output выставляет переменную в этом шаге
+        run: |
+          echo "::set-output name=IMAGE_NAME::${GITHUB_REPOSITORY#*/}"
+          echo "::set-output name=DOCKERHUB_IMAGE_NAME::docker.pkg.github.com/${GITHUB_REPOSITORY}/${GITHUB_REPOSITORY#*/}"
+
+#     Build Docker image:
+      - name: Build and tag image
+        run: |
+          docker build -t "${{ steps.global_env.outputs.DOCKERHUB_IMAGE_NAME }}:latest" -t "${{ steps.global_env.outputs.DOCKERHUB_IMAGE_NAME }}:${GITHUB_SHA::8}" .
+
+      - name: Docker login
+        run: docker login docker.pkg.github.com -u $GITHUB_ACTOR -p ${{secrets.GITHUB_TOKEN}}
+
+#     Publish image to github package repository:
+      - name: Publish image
+        env:
+          IMAGE_NAME: $GITHUB_REPOSITORY
+        run: docker push "docker.pkg.github.com/$GITHUB_REPOSITORY/${{ steps.global_env.outputs.IMAGE_NAME }}"
