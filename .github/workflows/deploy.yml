@@ -1,6 +1,9 @@
 name: Deploy docker image
 
 on:
+  pull_request:
+    branches:
+      - '*'
   push:
     branches:
       - 'master'
@@ -10,6 +13,7 @@ jobs:
   build_docker_image:
     runs-on: ubuntu-18.04
     steps:
+
 #     Build JAR
       - uses: actions/checkout@v1
       - name: set up JDK 11
@@ -21,11 +25,16 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Maven Package
         run: mvn -B clean compile package -DskipTests
+
 #     Build Docker image
       - name: Build and tag image
         run: docker build -t "docker.pkg.github.com/$GITHUB_REPOSITORY/$IMAGE_NAME:latest" .
       - name: Docker login
         run: docker login docker.pkg.github.com -u $GITHUB_ACTOR -p $GITHUB_TOKEN
+
+      - name: ECHO
+        run: echo $GITHUB_REPOSITORY/$IMAGE_NAME
+
 #     Publish image
-      - name: Publish to GPR
-        run: docker push "docker.pkg.github.com/$GITHUB_REPOSITORY/$IMAGE_NAME:latest"
+#      - name: Publish to GPR
+#        run: docker push "docker.pkg.github.com/$GITHUB_REPOSITORY/$IMAGE_NAME:latest"
