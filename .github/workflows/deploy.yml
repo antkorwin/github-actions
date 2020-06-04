@@ -23,13 +23,21 @@ jobs:
       - name: Maven Package
         run: mvn -B clean compile package -DskipTests
 
+      - name: set global env
+        id: global_env
+        run: |
+          echo "::set-output name=IMAGE_NAME::$GITHUB_REPOSITORY"
+
+      - name: test
+        run: echo ${{ steps.global_env.outputs.IMAGE_NAME }}
+
 #     Build Docker image
       - name: Build and tag image
         env:
-          IMAGE_NAME: ${GITHUB_REPOSITORY}
+          IMAGE_NAME: github-actions
         run: |
-          echo "docker.pkg.github.com/$GITHUB_REPOSITORY/$IMAGE_NAME:latest" .
-          docker build -t "docker.pkg.github.com/$GITHUB_REPOSITORY/$IMAGE_NAME:latest" .
+          echo "docker.pkg.github.com/$GITHUB_REPOSITORY/${{ steps.global_env.outputs.IMAGE_NAME }}:latest" .
+          docker build -t "docker.pkg.github.com/${GITHUB_REPOSITORY}/${{ steps.global_env.outputs.IMAGE_NAME }}:latest" .
 
 
       - name: Docker login
@@ -38,7 +46,7 @@ jobs:
       - name: Publish image
         env:
           IMAGE_NAME: $GITHUB_REPOSITORY
-        run: echo "docker.pkg.github.com/$GITHUB_REPOSITORY/$IMAGE_NAME:latest"
+        run: echo "docker.pkg.github.com/$GITHUB_REPOSITORY/${{ steps.global_env.outputs.IMAGE_NAME }}:latest"
 
 
 #     Publish image
