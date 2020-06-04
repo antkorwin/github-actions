@@ -21,20 +21,21 @@ jobs:
         id: find_issue
         shell: bash
         run: |
-          echo "##[set-output name=issue_id;]$(echo ${GITHUB_HEAD_REF} | egrep -o 'GA-[0-9]{1,4}')"
+          echo "::set-output name=ISSUE_ID::$(echo ${GITHUB_HEAD_REF} | egrep -o 'GA-[0-9]{1,4}')"
           echo brach: $GITHUB_HEAD_REF
-          echo issue: ${{env.issue_id}}
-          echo issue: ${{steps.find_issue.outputs.issue_id}}
+          echo grep: ${GITHUB_HEAD_REF} | egrep -o 'GA-[0-9]{1,4}'
+          echo env.issue: ${{env.ISSUE_ID}}
+          echo step.issue: ${{steps.find_issue.outputs.ISSUE_ID}}
 
-          if [[ "${{env.issue_id}}" == "" ]]; then
+          if [[ "${{env.ISSUE_ID}}" == "" ]]; then
             echo "Please name your branch according to the JIRA issue: [project_key]-[task_number]-branch_name"
             exit 1
           fi
-          echo succcessfully found JIRA issue: ${{env.issue_id}}
+          echo succcessfully found JIRA issue: ${{env.ISSUE_ID}}
 
       - name: Transition issue
         if: ${{ success() }}
         uses: atlassian/gajira-transition@master
         with:
-          issue: ${{ steps.find_issue.outputs.issue_id }}
+          issue: ${{ steps.find_issue.outputs.ISSUE_ID }}
           transition: "Code review"
