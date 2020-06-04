@@ -20,9 +20,15 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
-        env:
-          IMAGE_NAME: $GITHUB_REPOSITORY
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: set global env
+        run: |
+          echo "::set-output name=IMAGE_NAME::$GITHUB_REPOSITORY"
+          echo "::set-output name=GITHUB_TOKEN::${{secrets.GITHUB_TOKEN}}"
+
+      - name: ECHO
+        run: echo $GITHUB_REPOSITORY/$IMAGE_NAME
+
       - name: Maven Package
         run: mvn -B clean compile package -DskipTests
 
@@ -32,8 +38,7 @@ jobs:
       - name: Docker login
         run: docker login docker.pkg.github.com -u $GITHUB_ACTOR -p $GITHUB_TOKEN
 
-      - name: ECHO
-        run: echo $GITHUB_REPOSITORY/$IMAGE_NAME
+
 
 #     Publish image
 #      - name: Publish to GPR
