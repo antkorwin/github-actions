@@ -1,9 +1,8 @@
 name: Health Check
 
 on:
-  pull_request:
-    branches:
-      - '*'
+  schedule:
+    - cron:  '*/5 * * * *'
 
 jobs:
 
@@ -17,13 +16,13 @@ jobs:
 
       - name: health check
         run: |
-          if [[ ${{ steps.ping.outputs.status }} != *"U0P"* ]]; then
+          if [[ ${{ steps.ping.outputs.status }} != *"UP"* ]]; then
             echo "health check is failed"
             exit 1
           fi
           echo "It's OK"
 
-      - name: telega
+      - name: send alert in telegram
         if: ${{ failure() }}
         uses: appleboy/telegram-action@master
         with:
