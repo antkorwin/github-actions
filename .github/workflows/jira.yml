@@ -23,8 +23,8 @@ jobs:
         run: |
           echo "##[set-output name=issue_id;]$(echo ${GITHUB_HEAD_REF} | egrep -o 'GA-[0-9]{1,4}')"
           echo brach: $GITHUB_HEAD_REF
-          echo issue: $issue_id
           echo issue: ${{issue_id}}
+          echo issue: ${{env.issue_id}}
           echo issue: ${{steps.find_issue.outputs.issue_id}}
 
           if [[ "${{issue_id}}" == "" ]]; then
