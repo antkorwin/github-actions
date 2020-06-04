@@ -1,0 +1,36 @@
+name: JIRA
+
+on:
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Jira Workflow
+    steps:
+      - name: Login
+        uses: atlassian/gajira-login@master
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+
+      - name: Find Issue
+        id: find_issue
+        shell: bash
+        run: |
+          echo "##[set-output name=issue_id;]$(echo ${GITHUB_HEAD_REF} | egrep -o 'GA-[0-9]{1,4}')"
+          if [[ ${{ steps.find_issue.outputs.issue_id }} == "" ]]; then
+          echo "Please name your branch according to the JIRA issue: [project_key]-[task_number]-branch_name"
+          exit 1
+          fi
+          echo succcessfully found JIRA issue: $issue_id
+
+      - name: Transition issue
+        if: ${{ success() }}
+        uses: atlassian/gajira-transition@master
+        with:
+          issue: ${{ steps.find_issue.outputs.issue_id }}
+          transition: "Code review"
